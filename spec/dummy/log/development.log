@@ -1,0 +1,40 @@
+  [1m[36mSQL (2.4ms)[0m  [1mCREATE EXTENSION IF NOT EXISTS "plpgsql"[0m
+  [1m[35mSQL (22.2ms)[0m  CREATE EXTENSION IF NOT EXISTS "hstore"
+  [1m[36m (3.0ms)[0m  [1mCREATE TABLE "dummy_model_without_encryptions" ("id" serial primary key, "name" character varying(255), "age" integer, "created_at" timestamp, "updated_at" timestamp) [0m
+  [1m[35m (3.5ms)[0m  CREATE TABLE "dummy_models" ("id" serial primary key, "encryption_key_id" integer, "encrypted_store" bytea, "created_at" timestamp, "updated_at" timestamp) 
+  [1m[36m (2.7ms)[0m  [1mCREATE TABLE "encryption_key_salts" ("id" serial primary key, "encryption_key_id" integer, "salt" bytea) [0m
+  [1m[35m (3.2ms)[0m  CREATE TABLE "encryption_keys" ("id" serial primary key, "dek" bytea, "primary" boolean) 
+  [1m[36m (0.6ms)[0m  [1mCREATE TABLE "schema_migrations" ("version" character varying(255) NOT NULL) [0m
+  [1m[35m (0.7ms)[0m  CREATE UNIQUE INDEX "unique_schema_migrations" ON "schema_migrations" ("version")
+  [1m[36m (0.2ms)[0m  [1mSELECT version FROM "schema_migrations"[0m
+  [1m[35m (0.3ms)[0m  INSERT INTO "schema_migrations" (version) VALUES ('20150425000617')
+  [1m[36m (0.2ms)[0m  [1mINSERT INTO "schema_migrations" (version) VALUES ('20150424222827')[0m
+  [1m[35m (0.2ms)[0m  INSERT INTO "schema_migrations" (version) VALUES ('20150424224309')
+  [1m[36m (0.2ms)[0m  [1mINSERT INTO "schema_migrations" (version) VALUES ('20150424224517')[0m
+  [1m[35mActiveRecord::SchemaMigration Load (0.1ms)[0m  SELECT "schema_migrations".* FROM "schema_migrations"
+  [1m[36mRibbon::EncryptedStore::Mixins::ActiveRecordMixin::EncryptionKey Exists (1.5ms)[0m  [1mSELECT 1 AS one FROM "encryption_keys" WHERE "encryption_keys"."primary" = 't' LIMIT 1[0m
+  [1m[35m (0.1ms)[0m  BEGIN
+  [1m[36mRibbon::EncryptedStore::Mixins::ActiveRecordMixin::EncryptionKey Exists (0.2ms)[0m  [1mSELECT 1 AS one FROM "encryption_keys" WHERE "encryption_keys"."primary" = 't' LIMIT 1[0m
+  [1m[35mRibbon::EncryptedStore::Mixins::ActiveRecordMixin::EncryptionKey Exists (0.3ms)[0m  SELECT 1 AS one FROM "encryption_keys" WHERE "encryption_keys"."primary" = 't' LIMIT 1
+  [1m[36mSQL (1.7ms)[0m  [1mINSERT INTO "encryption_keys" ("dek", "primary") VALUES ($1, $2) RETURNING "id"[0m  [["dek", "<32 bytes of binary data>"], ["primary", true]]
+  [1m[35m (0.6ms)[0m  COMMIT
+  [1m[36mRibbon::EncryptedStore::Mixins::ActiveRecordMixin::EncryptionKey Load (0.4ms)[0m  [1mSELECT "encryption_keys".* FROM "encryption_keys" WHERE "encryption_keys"."primary" = 't' ORDER BY "encryption_keys"."id" DESC LIMIT 1[0m
+  [1m[35mRibbon::EncryptedStore::Mixins::ActiveRecordMixin::EncryptionKey Load (0.3ms)[0m  SELECT "encryption_keys".* FROM "encryption_keys" ORDER BY "encryption_keys"."created_at" ASC LIMIT 12
+PG::UndefinedColumn: ERROR:  column encryption_keys.created_at does not exist
+LINE 1: ...ryption_keys".* FROM "encryption_keys"   ORDER BY "encryptio...
+                                                             ^
+: SELECT  "encryption_keys".* FROM "encryption_keys"   ORDER BY "encryption_keys"."created_at" ASC LIMIT 12
+  [1m[36mRibbon::EncryptedStore::Mixins::ActiveRecordMixin::EncryptionKey Exists (0.3ms)[0m  [1mSELECT 1 AS one FROM "encryption_keys" WHERE "encryption_keys"."primary" = 't' LIMIT 1[0m
+  [1m[35mRibbon::EncryptedStore::Mixins::ActiveRecordMixin::EncryptionKey Load (0.3ms)[0m  SELECT "encryption_keys".* FROM "encryption_keys" WHERE "encryption_keys"."primary" = 't' ORDER BY "encryption_keys"."id" DESC LIMIT 1
+  [1m[36mRibbon::EncryptedStore::Mixins::ActiveRecordMixin::EncryptionKey Load (0.5ms)[0m  [1mSELECT "encryption_keys".* FROM "encryption_keys" ORDER BY "encryption_keys"."created_at" ASC LIMIT 12[0m
+PG::UndefinedColumn: ERROR:  column encryption_keys.created_at does not exist
+LINE 1: ...ryption_keys".* FROM "encryption_keys"   ORDER BY "encryptio...
+                                                             ^
+: SELECT  "encryption_keys".* FROM "encryption_keys"   ORDER BY "encryption_keys"."created_at" ASC LIMIT 12
+  [1m[36mActiveRecord::SchemaMigration Load (1.9ms)[0m  [1mSELECT "schema_migrations".* FROM "schema_migrations"[0m
+Migrating to CreateEncryptionKeySalts (20150724180212)
+  [1m[35m (0.1ms)[0m  BEGIN
+  [1m[36m (9.5ms)[0m  [1mCREATE TABLE "encryption_key_salts" ("id" serial primary key, "encryption_key_id" integer, "salt" bytea, "created_at" timestamp, "updated_at" timestamp) [0m
+PG::DuplicateTable: ERROR:  relation "encryption_key_salts" already exists
+: CREATE TABLE "encryption_key_salts" ("id" serial primary key, "encryption_key_id" integer, "salt" bytea, "created_at" timestamp, "updated_at" timestamp) 
+  [1m[35m (0.1ms)[0m  ROLLBACK
