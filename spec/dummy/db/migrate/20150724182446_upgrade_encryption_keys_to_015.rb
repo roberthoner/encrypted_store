@@ -1,4 +1,4 @@
-class UpgradeEncryptionKeysTo015 < ActiveRecord::Migration
+class UpgradeEncryptionKeysTo015 < ActiveRecord::Migration[4.2]
   def change
     add_column :encryption_keys, :created_at, :datetime
     add_column :encryption_keys, :updated_at, :datetime

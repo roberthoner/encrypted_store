@@ -30,10 +30,11 @@ module EncryptedStore
           # Store attrs in class data
           _encrypted_store_data[:encrypted_attributes] = args.map(&:to_sym)
 
-          args.each { |arg|
+          args.each do |arg|
+            self.attribute(arg) if self.respond_to?(:attribute)
             define_method(arg) { _encrypted_store_get(arg) }
             define_method("#{arg}=") { |value| _encrypted_store_set(arg, value) }
-          }
+          end
         end
       end # ClassMethods
 
